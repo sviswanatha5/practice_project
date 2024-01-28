@@ -2,15 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:practice_project/components/my_button.dart';
 import 'package:practice_project/components/my_test_field.dart';
 import 'package:practice_project/components/square_tile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
 
+  final emailController = TextEditingController();
   final passwordController = TextEditingController();
-  final usernameController = TextEditingController();
 
   //sign user
-  void signUserIn() {}
+  void signUserIn() async {
+    await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: emailController.text, password: passwordController.text);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,8 +49,8 @@ class HomeScreen extends StatelessWidget {
             //username
 
             MyTextField(
-              controller: usernameController,
-              hintText: 'Username',
+              controller: emailController,
+              hintText: 'Email',
               obscureText: false,
             ),
 
@@ -74,14 +78,59 @@ class HomeScreen extends StatelessWidget {
 
             const SizedBox(height: 25),
 
-            // MyButton(onTap: signUserIn()),
+            MyButton(onTap: ()=> {signUserIn()}),
+            
 
-            const SizedBox(height: 50),
+            const SizedBox(height: 25),
+
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 25.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Divider(
+                      color: Color.fromARGB(255, 97, 93, 93),
+                      thickness: 0.5,
+                    ),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 10.0),
+                    child: Text(
+                      'Or continue with',
+                      style: TextStyle(color: Color.fromARGB(255, 66, 65, 65)),
+                    ),
+                  ),
+                  Expanded(
+                    child: Divider(
+                      color: Color.fromARGB(255, 97, 93, 93),
+                      thickness: 0.5,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 30),
 
             // For google sign in
 
             const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
               SquareTile(imagePath: 'lib/images/google.png'),
+            ]),
+
+            const SizedBox(height: 30),
+
+            // end of UI, asks for registration
+            const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+              Text('Not a member? ',
+                  style: TextStyle(color: Color.fromARGB(255, 97, 93, 93))),
+              SizedBox(width: 4),
+              Text(
+                'Register Now',
+                style: TextStyle(
+                    color: Color.fromARGB(255, 21, 101, 192),
+                    fontWeight: FontWeight.bold),
+              ),
             ])
           ],
         )),

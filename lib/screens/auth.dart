@@ -1,7 +1,7 @@
 import "package:firebase_auth/firebase_auth.dart";
 import "package:flutter/material.dart";
 import "package:practice_project/screens/first_screen.dart";
-import "package:practice_project/screens/loginOrRegister.dart";
+import "package:practice_project/screens/home_screen.dart";
 
 class AuthPage extends StatelessWidget {
   const AuthPage({super.key});
@@ -15,7 +15,7 @@ class AuthPage extends StatelessWidget {
               if (snapshot.hasData) {
                 return const FirstScreen();
               } else {
-                return const LoginOrRegisterScreen();
+                return HomeScreen();
               }
             }));
   }

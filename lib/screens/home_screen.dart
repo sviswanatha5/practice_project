@@ -3,6 +3,7 @@ import 'package:practice_project/components/my_button.dart';
 import 'package:practice_project/components/my_test_field.dart';
 import 'package:practice_project/components/square_tile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:practice_project/services/aut_services.dart';
 
 class HomeScreen extends StatefulWidget {
   final Function()? onTap;
@@ -19,40 +20,22 @@ class _HomeScreenState extends State<HomeScreen> {
 
   //sign user
   void signUserIn() async {
-    showDialog(
-      context: context,
-      builder: (context) {
-        return const Center(
-          child: CircularProgressIndicator(),
-        );
-      },
-    );
-
-    Navigator.pop(context);
+    //Navigator.pop(context);
 
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
           email: emailController.text, password: passwordController.text);
     } on FirebaseAuthException catch (exception) {
-      Navigator.pop(context);
-      if (exception.code == 'user-not-found') {
-        //print('No user found/ wrong email');
-
-        wrongInputMessage();
-      } else if (exception.code == 'wrong-password') {
-        //print('Wrong password');
-
-        wrongInputMessage();
-      }
+      wrongInputMessage("Wrong email or password");
     }
   }
 
-  void wrongInputMessage() {
+  void wrongInputMessage(String message) {
     showDialog(
       context: context,
       builder: (context) {
-        return const AlertDialog(
-          title: Text('Incorrect Email'),
+        return AlertDialog(
+          title: Text(message),
         );
       },
     );
@@ -105,23 +88,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 controller: passwordController,
                 hintText: 'Password',
                 obscureText: true,
-              ),
 
-              //forgot password
-
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 25.0),
-                child: Row(mainAxisAlignment: MainAxisAlignment.end, children: [
-                  Text(
-                    'Forgot Password?',
-                    style: TextStyle(color: Color.fromARGB(255, 117, 117, 117)),
-                  ),
-                ]),
+                
               ),
 
               const SizedBox(height: 25),
 
-              MyButton(onTap: () => {signUserIn()}),
+              MyButton(onTap: () => {signUserIn()}, text: "Sign In"),
 
               const SizedBox(height: 25),
 
@@ -157,8 +130,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
               // For google sign in
 
-              const Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-                SquareTile(imagePath: 'lib/images/google.png'),
+              Row(mainAxisAlignment: MainAxisAlignment.center, children: [
+                SquareTile(
+                  imagePath: 'lib/images/google.png', 
+                  onTap: () => AuthService().signInGoogle(),
+                  ),
               ]),
 
               const SizedBox(height: 30),
@@ -169,7 +145,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     style: TextStyle(color: Color.fromARGB(255, 97, 93, 93))),
                 const SizedBox(width: 4),
                 GestureDetector(
-                  onTap: onTap,
+                  onTap: widget.onTap,
                   child: const Text(
                     'Register Now',
                     style: TextStyle(
